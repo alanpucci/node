@@ -22,7 +22,7 @@ app.get('/usuario', function(req, res) {
     //busca todos los usuarios, dentro del objeto del parametro podemos determinar alguna condicion
     //por ejemplo buscar todos los usuarios activos
     //2 param: OPCIONAL podemos determinar que campos mostrar unicamente del usuario
-    Usuario.find({}, )
+    Usuario.find({})
         //podemos skipear los primeros registros
         //.skip(desde)
         //ponemos como limite que solo me devuelva x registros
@@ -36,7 +36,7 @@ app.get('/usuario', function(req, res) {
                 })
             }
             //me devuelve todos los registros de usuarios y la cantidad
-            Usuario.countDocuments({ estado: true }, (err, conteo) => {
+            Usuario.countDocuments({}, (err, conteo) => {
                 res.json({
                     ok: true,
                     conteo,
@@ -66,9 +66,7 @@ app.get('/usuario/:id', function(req, res) {
 
 
 app.post('/usuario', function(req, res) {
-
     let body = req.body;
-
     //Estamos creando una instancia del esquema de mongoose creado en ../models/usuario
     let usuario = new Usuario({
         nombre: body.nombre,
@@ -93,24 +91,11 @@ app.post('/usuario', function(req, res) {
         //En caso de que este todo OK
         res.json({
             ok: true,
-            usuario: usuarioDB
+            usuario:{
+                usuarioDB
+            }
         })
     })
-
-    // if (body.nombre === undefined) {
-
-    //     res.status(400).json({
-    //         ok: false,
-    //         mensaje: 'El nombre es necesario'
-    //     });
-
-    // } else {
-    //     
-    // }
-    res.json({
-        persona: body
-    });
-
 });
 
 app.put('/usuario/:id', function(req, res) {
