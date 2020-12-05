@@ -1,5 +1,4 @@
 const express = require('express');
-const app = express();
 
 //importamos el encriptador de contrasenas
 const bcrypt = require('bcrypt');
@@ -9,8 +8,17 @@ const _ = require('underscore');
 
 //Va en mayuscula porque estamos creando un objeto de Usuario
 const Usuario = require('../models/usuario');
+//Accedemos a los middlewares
+const { verificaToken, verificaAdminRole } = require('../middlewares/autenticacion');
+const app = express();
 
-app.get('/usuario', function(req, res) {
+app.get('/usuario', verificaToken, (req, res) => {
+
+    // return res.json({
+    //     usuario: req.usuario,
+    //     nombre: req.usuario.nombre,
+    //     email: req.usuario.email
+    // })
 
     //podemos recibir como parametro en la url, desde donde queremos skipear (por ejemplo)
     // let desde = req.query.desde || 0;
@@ -22,7 +30,7 @@ app.get('/usuario', function(req, res) {
     //busca todos los usuarios, dentro del objeto del parametro podemos determinar alguna condicion
     //por ejemplo buscar todos los usuarios activos
     //2 param: OPCIONAL podemos determinar que campos mostrar unicamente del usuario
-    Usuario.find({}, )
+    Usuario.find({ estado: true }, )
         //podemos skipear los primeros registros
         //.skip(desde)
         //ponemos como limite que solo me devuelva x registros
@@ -65,7 +73,7 @@ app.get('/usuario/:id', function(req, res) {
 });
 
 
-app.post('/usuario', function(req, res) {
+app.post('/usuario', [verificaToken, verificaAdminRole], function(req, res) {
 
     let body = req.body;
 
@@ -87,7 +95,9 @@ app.post('/usuario', function(req, res) {
         if (err) {
             return res.status(400).json({
                 ok: false,
-                err
+                err: {
+                    message: `El email debe ser unico`
+                }
             })
         }
         //En caso de que este todo OK
@@ -107,17 +117,13 @@ app.post('/usuario', function(req, res) {
     // } else {
     //     
     // }
-    res.json({
-        persona: body
-    });
-
 });
 
-app.put('/usuario/:id', function(req, res) {
+app.put('/usuario/:id', verificaToken, function(req, res) {
 
     let id = req.params.id;
     //underscore, metodo pick para determinar que campos se pueden modificar unicamente
-    let body = _.pick(req.body, ['body', 'email', 'img', 'role', 'estado']);
+    let body = _.pick(req.body, ['nombre']);
 
     //Busca por id y luego me lo modifica
     //1 param: id a buscar
@@ -138,10 +144,9 @@ app.put('/usuario/:id', function(req, res) {
                 usuario: usuarioDB
             });
         })
-
 });
 
-app.delete('/usuario/:id', function(req, res) {
+app.delete('/usuario/:id', [verificaToken, verificaAdminRole], function(req, res) {
     let id = req.params.id;
 
     //Eliminacion fisica del usuario, YA NO SE USA

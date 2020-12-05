@@ -20,7 +20,7 @@ let usuarioSchema = new Schema({
     },
     email: {
         type: String,
-        unique: true, //Para que no se pueda volver a ingresar el mismo mail
+        unique: [true, 'Email ya registrado'], //Para que no se pueda volver a ingresar el mismo mail
         required: [true, `El correo es necesario`]
     },
     password: {
@@ -38,7 +38,6 @@ let usuarioSchema = new Schema({
     },
     estado: {
         type: Boolean,
-        require: true,
         default: true
     },
     google: {
@@ -58,6 +57,7 @@ usuarioSchema.methods.toJSON = function() {
     let userObject = user.toObject();
     //borro el password
     delete userObject.password;
+    return userObject;
 }
 
 //A nuestro esquema de usuario vamos a meterle el plugin del uniqueValidator
