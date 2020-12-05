@@ -30,7 +30,11 @@ app.get('/usuario', verificaToken, (req, res) => {
     //busca todos los usuarios, dentro del objeto del parametro podemos determinar alguna condicion
     //por ejemplo buscar todos los usuarios activos
     //2 param: OPCIONAL podemos determinar que campos mostrar unicamente del usuario
+<<<<<<< HEAD
     Usuario.find({ estado: true }, )
+=======
+    Usuario.find({})
+>>>>>>> d21453788f4fd42bb9f9247b34fe9590f33ef345
         //podemos skipear los primeros registros
         //.skip(desde)
         //ponemos como limite que solo me devuelva x registros
@@ -44,7 +48,7 @@ app.get('/usuario', verificaToken, (req, res) => {
                 })
             }
             //me devuelve todos los registros de usuarios y la cantidad
-            Usuario.countDocuments({ estado: true }, (err, conteo) => {
+            Usuario.countDocuments({}, (err, conteo) => {
                 res.json({
                     ok: true,
                     conteo,
@@ -73,10 +77,13 @@ app.get('/usuario/:id', function(req, res) {
 });
 
 
+<<<<<<< HEAD
 app.post('/usuario', [verificaToken, verificaAdminRole], function(req, res) {
 
+=======
+app.post('/usuario', function(req, res) {
+>>>>>>> d21453788f4fd42bb9f9247b34fe9590f33ef345
     let body = req.body;
-
     //Estamos creando una instancia del esquema de mongoose creado en ../models/usuario
     let usuario = new Usuario({
         nombre: body.nombre,
@@ -103,9 +110,12 @@ app.post('/usuario', [verificaToken, verificaAdminRole], function(req, res) {
         //En caso de que este todo OK
         res.json({
             ok: true,
-            usuario: usuarioDB
+            usuario:{
+                usuarioDB
+            }
         })
     })
+<<<<<<< HEAD
 
     // if (body.nombre === undefined) {
 
@@ -117,6 +127,8 @@ app.post('/usuario', [verificaToken, verificaAdminRole], function(req, res) {
     // } else {
     //     
     // }
+=======
+>>>>>>> d21453788f4fd42bb9f9247b34fe9590f33ef345
 });
 
 app.put('/usuario/:id', verificaToken, function(req, res) {
